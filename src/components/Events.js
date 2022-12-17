@@ -1,6 +1,8 @@
 import React from "react";
 import { Routes, Route, Link, NavLink } from "react-router-dom";
-import Event from "./Event";
+import { LazyLoadImage } from "react-lazy-load-image-component";
+import placeholder from "../images/placeholder.png";
+// import Placeholder from "./Placeholder";
 
 export default function Events(props) {
   let [lon, lat] = props.coordinates.map((x) => x);
@@ -9,40 +11,51 @@ export default function Events(props) {
   const EARTH_API_URL = `https://api.nasa.gov/planetary/earth/assets?lon=${lon}&lat=${lat}&date=${date}&dim=0.15&&api_key=`;
   const NASA_API_KEY = "ijz7SNQHjWKEmWblGRlmfPq3nCPhg6LuCNyjZcgb";
 
-  const [src, setSrc] = React.useState();
   const [earthData, setEarthData] = React.useState(null);
 
   React.useEffect(() => {
     fetch(EARTH_API_URL + NASA_API_KEY)
       .then((response) => response.json())
       .then((data) => setEarthData(data))
-      // .then((earthData) => setSrc(earthData.url))
       .catch((error) => console.log(error));
   }, [lon]);
   if (!earthData) {
     return <p>Loading...</p>;
   }
 
-  //   alert(earthData.url);
-  <Event id={props.id} lon={lon} lat={lat} />;
-  console.log(earthData.id);
-  // const Img = React.memo(() => <img src={earthData.url} />);
-  // const image = React.useImage()
+  // console.log(earthData.id);
+  const encodeImg = encodeURIComponent(earthData.url);
 
   return (
-    <div>
-      <h1>{props.id}</h1>
-      <p>{lon}</p>
-      <p>{lat}</p>
+    <div className=" col-lg-4">
+      <div className="events ">
+        <h1>Title: {props.title}</h1>
+        <LazyLoadImage
+          placeholderSrc={placeholder}
+          // placeholder={<Placeholder />}
+          alt="image"
+          className="sateliteImg"
+          src={`${earthData.url}`}
+        ></LazyLoadImage>
+        <div className="events-coordinates ">
+          <p>Lat: {lat}</p>
 
-      <img alt="" className="sateliteImg" src={`${earthData.url}`}></img>
+          <p>Lon: {lon}</p>
+        </div>
 
-      <p>{date}</p>
-      {/* <p>{props.lon}</p> */}
-      <nav>
-        {" "}
-        <Link to={`/root/${props.id}/${lat}/${lon}`}> Go to the image</Link>
-      </nav>
+        <p>Date: {date}</p>
+        <nav>
+          {" "}
+          <Link
+            rel="noreferrer"
+            target="_blank"
+            to={`/root/${props.id}/${lat}/${lon}/${props.title}/${encodeImg}`}
+          >
+            {" "}
+            Go to the image
+          </Link>
+        </nav>
+      </div>
     </div>
   );
 }

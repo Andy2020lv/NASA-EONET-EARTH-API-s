@@ -1,7 +1,125 @@
+#root {
+  background-color: #f9f2ed;
+}
+
 .active {
-  color: green;
+  color: white;
+  font-weight: 800;
+  font-size: 1.5rem;
+}
+
+.see-events {
+  font-weight: 800;
+  font-size: 1.5rem;
+  color: #fefcf3;
+}
+
+.btn {
+  background-color: black !important;
+  height: 3rem;
+}
+
+a {
+  text-decoration: none !important;
+}
+
+.navigation {
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  display: flex;
+  justify-content: center;
+  padding: 5rem 0.5rem;
+  background-image: url("https://www.popsci.com/uploads/2022/07/12/carina-nebula-james-webb-space-telescope-camera.jpg?auto=webp&width=1440&height=853.92");
+}
+
+/* /////////////// PicDay ///////////////// */
+
+.pic-day-container {
+  padding: 1rem;
+  text-align: center;
+}
+
+.pic-day-img {
+  width: 100%;
+}
+
+.pic-day-exp {
+  margin-top: 2rem;
+  font-weight: 300;
+  line-height: 1.8;
+  text-align: left;
+}
+
+.pic-day-link {
+  color: #3d3c42;
+  margin-top: 3rem;
+  font-size: 1.5rem;
+  font-weight: 500;
+  /* margin-top: 2rem !important; */
+}
+/* ////////////// Events //////////////////// */
+
+.events {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* margin-top: 3rem; */
+  background-color: #f9f2ed;
+  padding: 2rem;
+  color: black;
+  text-align: center;
 }
 
 .sateliteImg {
+  width: 70%;
+  margin-bottom: 1rem;
+}
+
+.events-coordinates {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+@media (min-width: 40em) {
+  .events {
+    display: block;
+  }
+  .sateliteImg {
+    width: 80% !important;
+    margin-bottom: 1rem;
+  }
+}
+
+/* ////////////// Event //////////////////// */
+
+.event {
+  background-color: #f9f2ed;
+  color: black;
+  height: 80vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding-top: 2rem;
+}
+
+.event-img {
   width: 50%;
+  margin: 1rem;
+}
+
+@media (min-width: 40em) {
+  .event {
+  }
+  .event-img {
+    width: 25%;
+  }
+}
+
+.placeholder-img {
+  width: 100px;
+  height: 100px;
 }
