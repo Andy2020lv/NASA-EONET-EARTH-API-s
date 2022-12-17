@@ -104,6 +104,7 @@ a {
     align-items: center;
     justify-content: center;
     padding: 2rem 2rem 0 2rem;
+    margin-bottom: 1rem;
   }
   .pic-day-img {
     width: 30%;

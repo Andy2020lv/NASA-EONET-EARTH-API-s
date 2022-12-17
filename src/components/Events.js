@@ -48,8 +48,6 @@ export default function Events(props) {
           {" "}
           <Link
             className="go-to"
-            rel="noreferrer"
-            target="_blank"
             to={`/root/${props.id}/${lat}/${lon}/${props.title}/${encodeImg}`}
           >
             {" "}
