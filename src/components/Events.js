@@ -1,5 +1,5 @@
 import React from "react";
-import { Routes, Route, Link, NavLink } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import placeholder from "../images/placeholder.png";
 // import Placeholder from "./Placeholder";
@@ -29,7 +29,7 @@ export default function Events(props) {
   return (
     <div className=" col-lg-4">
       <div className="events ">
-        <h1>Title: {props.title}</h1>
+        <h1>{props.title}</h1>
         <LazyLoadImage
           placeholderSrc={placeholder}
           // placeholder={<Placeholder />}
@@ -47,6 +47,7 @@ export default function Events(props) {
         <nav>
           {" "}
           <Link
+            className="go-to"
             rel="noreferrer"
             target="_blank"
             to={`/root/${props.id}/${lat}/${lon}/${props.title}/${encodeImg}`}

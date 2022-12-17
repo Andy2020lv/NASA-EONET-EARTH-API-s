@@ -21,7 +21,11 @@ export default function PicDay() {
   }, []);
 
   if (!response) {
-    return <div>Loading...</div>;
+    return (
+      <div className="loading">
+        <p>Loading...</p>
+      </div>
+    );
   }
 
   return (
@@ -29,16 +33,20 @@ export default function PicDay() {
       <h1 className="pic-day-title">
         {response.title} ({response.date})
       </h1>
-      <p className="pic-day-exp">{response.explanation}</p>
-      <img className="pic-day-img" src={response.url} alt={response.title} />
-      <a
-        className="pic-day-link"
-        rel="noreferrer"
-        target="_blank"
-        href={response.url}
-      >
-        See full image
-      </a>
+      <div className="pic-day-exp-img">
+        <p className="pic-day-exp">{response.explanation}</p>
+        <img className="pic-day-img" src={response.url} alt={response.title} />
+      </div>
+      <div className="pic-day-link ">
+        <a
+          className="go-to"
+          rel="noreferrer"
+          target="_blank"
+          href={response.url}
+        >
+          See full image
+        </a>
+      </div>
     </div>
   );
 

@@ -1,7 +1,7 @@
 import React from "react";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 
-import { Routes, Route, Link, NavLink, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 export default function Event(props) {
   const { id, lat, lon, title, imgUrl } = useParams();
@@ -17,6 +17,7 @@ export default function Event(props) {
         Lat: {lat} Lon: {lon}
       </h5>
       <a
+        className="go-to"
         rel="noreferrer"
         target="_blank"
         href={`https://earth.google.com/web/@${lat},${lon},${zoom}d,0,0,0`}

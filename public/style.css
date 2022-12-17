@@ -3,15 +3,32 @@
 }
 
 .active {
-  color: white;
+  color: black;
   font-weight: 800;
   font-size: 1.5rem;
+}
+
+.see-events-container {
+  display: flex;
+  flex-direction: column;
 }
 
 .see-events {
   font-weight: 800;
   font-size: 1.5rem;
   color: #fefcf3;
+  border: 0.2rem solid;
+  padding: 10px 20px;
+  border-color: #141619;
+}
+.see-events:hover {
+  background-color: black;
+  border-color: #fefcf3;
+  color: white;
+}
+
+.see-events:active {
+  background-color: black;
 }
 
 .btn {
@@ -28,9 +45,26 @@ a {
   background-position: center;
   background-size: cover;
   display: flex;
-  justify-content: center;
+  flex-direction: column-reverse;
+  align-items: center;
   padding: 5rem 0.5rem;
   background-image: url("https://www.popsci.com/uploads/2022/07/12/carina-nebula-james-webb-space-telescope-camera.jpg?auto=webp&width=1440&height=853.92");
+}
+
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.loading p {
+  font-weight: 800;
+}
+@media (min-width: 40em) {
+  .navigation {
+    display: flex;
+    justify-content: center;
+    flex-direction: row;
+  }
 }
 
 /* /////////////// PicDay ///////////////// */
@@ -58,6 +92,31 @@ a {
   font-weight: 500;
   /* margin-top: 2rem !important; */
 }
+@media (min-width: 40em) {
+  .pic-day-container {
+    padding: 1rem;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+  }
+  .pic-day-exp-img {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 2rem 0 2rem;
+  }
+  .pic-day-img {
+    width: 30%;
+  }
+  .pic-day-exp {
+    max-width: 30rem;
+    margin-right: 4rem;
+  }
+  .pic-day-link {
+    margin: 0;
+  }
+}
+
 /* ////////////// Events //////////////////// */
 
 .events {
@@ -82,9 +141,25 @@ a {
   justify-content: center;
 }
 
+.go-to {
+  border: 0.2rem solid;
+  padding: 10px 20px;
+  border-color: white;
+  color: black;
+  font-size: 1.3rem;
+  font-weight: 700;
+}
+
+.go-to:hover {
+  border-color: black;
+  color: black;
+  background-color: white;
+}
+
 @media (min-width: 40em) {
   .events {
-    display: block;
+    text-align: left;
+    width: 19rem;
   }
   .sateliteImg {
     width: 80% !important;
@@ -117,9 +192,4 @@ a {
   .event-img {
     width: 25%;
   }
-}
-
-.placeholder-img {
-  width: 100px;
-  height: 100px;
 }
