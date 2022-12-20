@@ -22,7 +22,6 @@ export default function Events(props) {
   if (!earthData) {
     return <p>Loading...</p>;
   }
-
   // console.log(earthData.id);
   const encodeImg = encodeURIComponent(earthData.url);
 

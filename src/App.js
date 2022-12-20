@@ -3,6 +3,7 @@ import PicDay from "./components/PicDay";
 import React from "react";
 import Events from "./components/Events";
 import Event from "./components/Event";
+import Alert from "./components/Alert";
 
 function App() {
   const [category, setCategory] = React.useState("");
@@ -41,6 +42,8 @@ function App() {
   return (
     <div>
       <div className="navigation">
+        <Alert />
+
         <div className="btn-group">
           <button
             className="btn btn-secondary dropdown-toggle"
