@@ -8,6 +8,8 @@ export default function Alert() {
   const [eventName, setEventName] = React.useState("");
   const [eventSrc, setevEntSrc] = React.useState(null);
 
+  const [userLocation, setUserLocation] = React.useState({});
+
   React.useEffect(() => {
     fetch(EONET_API_URL + NASA_API_KEY)
       .then((response) => response.json())
@@ -23,6 +25,37 @@ export default function Alert() {
     );
   }
 
+  function getUserLocation() {
+    navigator.geolocation.getCurrentPosition((position) => {
+      setUserLocation({
+        latitude: position.coords.latitude,
+        longitude: position.coords.longitude,
+      });
+    });
+  }
+
+  data.events.forEach((event) => {
+    const lastGeometry = event.geometry[event.geometry.length - 1];
+
+    lon = lastGeometry.coordinates[0];
+    lat = lastGeometry.coordinates[1];
+    console.log(lon, lat);
+    const distance = haversineDistance(
+      { latitude: lat, longitude: lon },
+      {
+        latitude: lat,
+        longitude: lon,
+      }
+    );
+    // Check if distance is less than 10 km and if it is closed or not.
+    if (distance <= 50 && !event.closed) {
+      console.log(`The distance is ${distance} km. Event: ${event.title}`);
+      setIsClose(true);
+      setEventName(event.title);
+      setevEntSrc(event.sources[0].url);
+    }
+  });
+
   let lon;
   let lat;
 
@@ -35,11 +68,11 @@ export default function Alert() {
 
   //   console.log(lon);
 
-  const handleChange = (event) => {
-    const { name, value } = event.target;
-    setLocation({ ...location, [name]: value });
-  };
-  console.log(location);
+  //   const handleChange = (event) => {
+  //     const { name, value } = event.target;
+  //     setLocation({ ...location, [name]: value });
+  //   };
+  //   console.log(location);
   function haversineDistance(coords1, coords2) {
     const earthRadius = 6371; // km
     let lat1 = coords1.latitude;
@@ -68,28 +101,28 @@ export default function Alert() {
     event.preventDefault();
 
     // Calculate distance using Haversine function
-    data.events.forEach((event) => {
-      const lastGeometry = event.geometry[event.geometry.length - 1];
+    // data.events.forEach((event) => {
+    //   const lastGeometry = event.geometry[event.geometry.length - 1];
 
-      lon = lastGeometry.coordinates[0];
-      lat = lastGeometry.coordinates[1];
-      const distance = haversineDistance(location, {
-        latitude: lat,
-        longitude: lon,
-      });
-      // Check if distance is less than 10 km and if it is closed or not.
-      if (distance <= 50 && !event.closed) {
-        console.log(`The distance is ${distance} km. Event: ${event.title}`);
-        setIsClose(true);
-        setEventName(event.title);
-        setevEntSrc(event.sources[0].url);
-      }
-    });
+    //   lon = lastGeometry.coordinates[0];
+    //   lat = lastGeometry.coordinates[1];
+    //   const distance = haversineDistance(location, {
+    //     latitude: lat,
+    //     longitude: lon,
+    //   });
+    //   // Check if distance is less than 10 km and if it is closed or not.
+    //   if (distance <= 50 && !event.closed) {
+    //     console.log(`The distance is ${distance} km. Event: ${event.title}`);
+    //     setIsClose(true);
+    //     setEventName(event.title);
+    //     setevEntSrc(event.sources[0].url);
+    //   }
+    // });
   };
   console.log(isClose);
   return (
     <div style={{ color: "white" }}>
-      <form onSubmit={handleSubmit}>
+      {/* <form onSubmit={handleSubmit}>
         <label htmlFor="longitude">Longitude:</label>
         <input
           onChange={handleChange}
@@ -107,7 +140,7 @@ export default function Alert() {
         />
         <br />
         <button type="submit">Submit</button>
-      </form>
+      </form> */}
 
       {isClose && (
         <div style={{ width: "25rem" }} className="alert">
