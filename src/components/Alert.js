@@ -6,9 +6,18 @@ export default function Alert() {
   const [eventName, setEventName] = React.useState("");
   const [eventSrc, setevEntSrc] = React.useState(null);
   const [eventDistance, setEventDistance] = React.useState(null);
+  const [eventDate, setEventDate] = React.useState();
 
   const [userLocation, setUserLocation] = useState(null);
   const [naturalEvents, setNaturalEvents] = useState([]);
+
+  // Get current date
+  const currentDate = new Date();
+  const year = currentDate.getFullYear();
+  const month = ("0" + (currentDate.getMonth() + 1)).slice(-2);
+  const day = ("0" + currentDate.getDate()).slice(-2);
+
+  const currentDateString = `${year}-${month}-${day}`;
 
   useEffect(() => {
     // Get the user's location
@@ -42,22 +51,28 @@ export default function Alert() {
           event.geometry[event.geometry.length - 1].coordinates[1],
           event.geometry[event.geometry.length - 1].coordinates[0]
         );
-        // console.log(naturalEvents);
-        // console.log(distance);
 
-        // If the event is within 50km of the user's location AND active, display an alert
-        if (distance <= 50 && event.closed) {
+        // If the event is within 50km of the user's location/
+        if (distance <= 50) {
           // alert(
           //   `There is a natural event within 50km of your location: ${event.title}`
           // );
-          setIsClose(true);
-          setEventName(event.title);
-          setevEntSrc(event.sources[0].url);
-          setEventDistance(distance);
+
+          setEventDate(
+            event.geometry[event.geometry.length - 1].date.slice(0, 10)
+          );
+
+          // If that events date is equal to today's date, display the alert.
+          if (eventDate === currentDateString) {
+            setIsClose(true);
+            setEventName(event.title);
+            setevEntSrc(event.sources[0].url);
+            setEventDistance(distance);
+          }
         }
       });
     }
-  }, [userLocation, naturalEvents]);
+  }, [userLocation, naturalEvents, eventDate, currentDateString]);
 
   function getDistance(lat1, lng1, lat2, lng2) {
     const R = 6371; // radius of the Earth in km
@@ -74,9 +89,9 @@ export default function Alert() {
     return Number(d.toFixed(1));
   }
 
-  // console.log(userLocation);
   return (
     <div style={{ color: "white" }}>
+      {console.log(eventDate === currentDateString)}
       {isClose && (
         <div style={{ width: "25rem" }} className="alert">
           {" "}
