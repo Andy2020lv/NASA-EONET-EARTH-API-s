@@ -1,163 +1,115 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 export default function Alert() {
   const EONET_API_URL = "https://eonet.gsfc.nasa.gov/api/v3/events?";
   const NASA_API_KEY = "ijz7SNQHjWKEmWblGRlmfPq3nCPhg6LuCNyjZcgb";
-  const [location, setLocation] = React.useState({});
   const [isClose, setIsClose] = React.useState(false);
-  const [data, setData] = React.useState(null);
   const [eventName, setEventName] = React.useState("");
   const [eventSrc, setevEntSrc] = React.useState(null);
+  const [eventDistance, setEventDistance] = React.useState(null);
+  const [eventDate, setEventDate] = React.useState();
 
-  const [userLocation, setUserLocation] = React.useState({});
+  const [userLocation, setUserLocation] = useState(null);
+  const [naturalEvents, setNaturalEvents] = useState([]);
 
-  React.useEffect(() => {
-    fetch(EONET_API_URL + NASA_API_KEY)
-      .then((response) => response.json())
-      .then((data) => setData(data))
-      .catch((error) => console.log(error));
-  }, []);
+  // Get current date
+  const currentDate = new Date();
+  const year = currentDate.getFullYear();
+  const month = ("0" + (currentDate.getMonth() + 1)).slice(-2);
+  const day = ("0" + currentDate.getDate()).slice(-2);
 
-  if (!data) {
-    return (
-      <div className="loading">
-        <p>Loading...</p>
-      </div>
-    );
-  }
+  const currentDateString = `${year}-${month}-${day}`;
 
-  function getUserLocation() {
+  useEffect(() => {
+    // Get the user's location
     navigator.geolocation.getCurrentPosition((position) => {
       setUserLocation({
-        latitude: position.coords.latitude,
-        longitude: position.coords.longitude,
+        lat: position.coords.latitude,
+        lng: position.coords.longitude,
       });
     });
-  }
+  }, []);
 
-  data.events.forEach((event) => {
-    const lastGeometry = event.geometry[event.geometry.length - 1];
-
-    lon = lastGeometry.coordinates[0];
-    lat = lastGeometry.coordinates[1];
-    console.log(lon, lat);
-    const distance = haversineDistance(
-      { latitude: lat, longitude: lon },
-      {
-        latitude: lat,
-        longitude: lon,
-      }
-    );
-    // Check if distance is less than 10 km and if it is closed or not.
-    if (distance <= 50 && !event.closed) {
-      console.log(`The distance is ${distance} km. Event: ${event.title}`);
-      setIsClose(true);
-      setEventName(event.title);
-      setevEntSrc(event.sources[0].url);
+  useEffect(() => {
+    if (userLocation) {
+      // Make a request to the NASA EONET API to get a list of natural events
+      fetch(`${EONET_API_URL}?key=${NASA_API_KEY}`)
+        .then((response) => response.json())
+        .then((data) => {
+          setNaturalEvents(data.events);
+        });
     }
-  });
+  }, [userLocation]);
 
-  let lon;
-  let lat;
+  useEffect(() => {
+    if (userLocation && naturalEvents.length > 0) {
+      // Iterate over the list of natural events, and use the Haversine formula
+      // to calculate the distance between each event and the user's location
+      naturalEvents.forEach((event) => {
+        const distance = getDistance(
+          userLocation.lat,
+          userLocation.lng,
+          event.geometry[event.geometry.length - 1].coordinates[1],
+          event.geometry[event.geometry.length - 1].coordinates[0]
+        );
 
-  //   data.events.forEach((event) => {
-  //     event.geometry.forEach((geometry) => {
-  //       lon = geometry.coordinates[0];
-  //       lat = geometry.coordinates[1];
-  //     });
-  //   });
+        // If the event is within 50km of the user's location/
+        if (distance <= 50) {
+          // alert(
+          //   `There is a natural event within 50km of your location: ${event.title}`
+          // );
 
-  //   console.log(lon);
+          setEventDate(
+            event.geometry[event.geometry.length - 1].date.slice(0, 10)
+          );
 
-  //   const handleChange = (event) => {
-  //     const { name, value } = event.target;
-  //     setLocation({ ...location, [name]: value });
-  //   };
-  //   console.log(location);
-  function haversineDistance(coords1, coords2) {
-    const earthRadius = 6371; // km
-    let lat1 = coords1.latitude;
-    let lon1 = coords1.longitude;
-    let lat2 = coords2.latitude;
-    let lon2 = coords2.longitude;
+          // If that events date is equal to today's date, display the alert.
+          if (eventDate === currentDateString) {
+            setIsClose(true);
+            setEventName(event.title);
+            setevEntSrc(event.sources[0].url);
+            setEventDistance(distance);
+          }
+        }
+      });
+    }
+  }, [userLocation, naturalEvents, eventDate, currentDateString]);
 
-    const dLat = toRadians(lat2 - lat1);
-    const dLon = toRadians(lon2 - lon1);
-
-    lat1 = toRadians(lat1);
-    lat2 = toRadians(lat2);
-
+  function getDistance(lat1, lng1, lat2, lng2) {
+    const R = 6371; // radius of the Earth in km
+    const dLat = (lat2 - lat1) * (Math.PI / 180);
+    const dLng = (lng2 - lng1) * (Math.PI / 180);
     const a =
       Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-      Math.sin(dLon / 2) * Math.sin(dLon / 2) * Math.cos(lat1) * Math.cos(lat2);
+      Math.cos(lat1 * (Math.PI / 180)) *
+        Math.cos(lat2 * (Math.PI / 180)) *
+        Math.sin(dLng / 2) *
+        Math.sin(dLng / 2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-
-    return earthRadius * c;
+    const d = R * c;
+    return Number(d.toFixed(1));
   }
 
-  function toRadians(degrees) {
-    return (degrees * Math.PI) / 180;
-  }
-  const handleSubmit = (event) => {
-    event.preventDefault();
-
-    // Calculate distance using Haversine function
-    // data.events.forEach((event) => {
-    //   const lastGeometry = event.geometry[event.geometry.length - 1];
-
-    //   lon = lastGeometry.coordinates[0];
-    //   lat = lastGeometry.coordinates[1];
-    //   const distance = haversineDistance(location, {
-    //     latitude: lat,
-    //     longitude: lon,
-    //   });
-    //   // Check if distance is less than 10 km and if it is closed or not.
-    //   if (distance <= 50 && !event.closed) {
-    //     console.log(`The distance is ${distance} km. Event: ${event.title}`);
-    //     setIsClose(true);
-    //     setEventName(event.title);
-    //     setevEntSrc(event.sources[0].url);
-    //   }
-    // });
-  };
-  console.log(isClose);
   return (
     <div style={{ color: "white" }}>
-      {/* <form onSubmit={handleSubmit}>
-        <label htmlFor="longitude">Longitude:</label>
-        <input
-          onChange={handleChange}
-          type="text"
-          id="longitude"
-          name="longitude"
-        />
-        <br />
-        <label htmlFor="latitude">Latitude:</label>
-        <input
-          onChange={handleChange}
-          type="text"
-          id="latitude"
-          name="latitude"
-        />
-        <br />
-        <button type="submit">Submit</button>
-      </form> */}
-
+      {console.log(eventDate === currentDateString)}
       {isClose && (
         <div style={{ width: "25rem" }} className="alert">
           {" "}
           <div
-            class="alert alert-danger d-flex align-items-center"
+            className="alert alert-danger d-flex align-items-center"
             role="alert"
           >
             <div>
-              <p>Alert, {eventName} is close to you.</p>
-              <a href={eventSrc}>More info:</a>
+              <p>
+                Alert, {eventName} is at {eventDistance}km from you.
+              </p>
+              <a rel="noreferrer" target="_blank" href={eventSrc}>
+                More info:
+              </a>
             </div>
           </div>
         </div>
       )}
-      {/* <p>{lon}</p> */}
-      {/* <p>{lat}</p> */}
     </div>
   );
 }
