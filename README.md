@@ -2,13 +2,9 @@
 
 ![Project Image](https://i.imgur.com/8eG3x0M.png)
 
-> This is a ReadMe template to help save you time and effort.
-
 ---
 
 ### Table of Contents
-
-You're sections headers will be used to reference location of destination.
 
 - [Description](#description)
 

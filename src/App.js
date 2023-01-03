@@ -4,7 +4,7 @@ import React from "react";
 import Events from "./components/Events";
 import Event from "./components/Event";
 import Alert from "./components/Alert";
-import MapPage from "./components/MapPage";
+// import MapPage from "./components/MapPage";
 
 function App() {
   const [category, setCategory] = React.useState("");
@@ -19,7 +19,7 @@ function App() {
       .then((response) => response.json())
       .then((data) => setNasaData(data))
       .catch((error) => console.log(error));
-  }, [category, limit]);
+  }, [category, limit, EONET_API_URL]);
 
   if (!nasaData) {
     return (
@@ -128,9 +128,9 @@ function App() {
                 <NavLink className="see-events" to="/">
                   Pic/day
                 </NavLink>
-                <NavLink className="see-events" to="/map">
+                {/* <NavLink className="see-events" to="/map">
                   Map
-                </NavLink>
+                </NavLink> */}
               </div>
             </li>
           </ul>
@@ -146,7 +146,7 @@ function App() {
           path="/root/:id/:lat/:lon/:title/:imgUrl"
           element={<Event />}
         ></Route>
-        <Route path="/map" element={<MapPage />}></Route>
+        {/* <Route path="/map" element={<MapPage />}></Route> */}
         {/* <Route element={<Places />} path="/places"></Route> */}
       </Routes>
     </div>
